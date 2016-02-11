@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Medium</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<header class="global-header">
+		<div class="logo">
+			<img src="medialogo.png">
+		</div>
+		<div class="publish">
+			<img src="https://cdn-images-1.medium.com/fit/c/32/32/1*bs9PbxDndAW7mmqve3EQ-w.jpeg">
+			<span class="publish-info">
+				<span class="block capitalized">
+					PUblished IN
+				</span>
+				<h3 class="publish-category">
+					React Tutorials
+				</h3>
+			</span>
+		</div>
+		<div class="search-signIn">
+			<div class="search">
+				<input type="text" placeholder="Search Medium" class="rounded btn" />
+				<button class="rounded btn grborder">
+				<a href="https://medium.com/m/signin?redirect=https%3A%2F%2Fmedium.com%3A443%2Freact-tutorials%2Freact-components-828c397e3dc8">Sign in / Sign up </a>
+				</button>
+
+			</div>
+			<div class="signin"></div>
+		</div>
+	</header>
+		
+
+	<section class="post container">
+		<header class="author">
+
+		</header>
+
+		<article class="content">
+
+			<h1>React Components</h1>
+
+			<p class="post-para">Components are the smallest, yet most fundamental part of React. They’re similar, in concepts, to things like widgets and modules. React defines itself as a library for building user interfaces. As such, when you think of a user interface you want to build (with React), you need to think of it in terms of the smallest possible components that you can define.
+			</p>
+			<p class="post-para">These components include code which defines how DOM elements are created and how users can interact with them. Components can be defined purely in JavaScript or they can be defined in a superset (or extended variation) of JavaScript called JSX. If you decide to use JSX for your component definitions, you may also need a compiler application, but we’ll get to that in a minute.
+			</p>
+			<blockquote>
+				We’re going to be referring to pure JavaScript as JS and the React version of JavaScript as JSX.<br /><br />
+				You can find the accompanying source-code, for this tutorial, at: https://github.com/formativ/tutorial-react-components.<br /><br />
+				Please post any errors you find, or questions you have as comments on this article or as issues on GitHub.<br /><br />
+				Thanks to Pete Hunt for helping to improve this!
+			</blockquote>
+
+			<h1>Embedded HTML</h1>
+
+			<p class="post-para">If you’ve been developing websites for a while, you may have flinched when I spoke about using HTML within your JavaScript. For the longest time, a development paradigm has existed which says that you should split HTML and JavaScript. Words like unobtrusive have been repurposed to express this kind of separation. That is exactly how I felt, until I started working with React.</p>
+			<p class="post-para">The reason this paradigm exists is to decrease coupling (how much things depend on each other) and increase cohesion (how well different things work together). So we have created an environment in which we try our best to make HTML (and templates) as free of logic as possible. We then need to attach behaviour to this in the form of external scripts.</p>
+			<p class="post-para">There are trade-offs with this approach to doing things. For starters, it takes more effort trying to keep these two things separate. There are many template engines and languages. There are also many template parsers to handle them all. And yet these languages (with the exception of HTML) still seem to include a modicum of logical operations…</p>
+			<p class="post-para">Additionally, when we need to modify the contents of a web page, via JavaScript, we have to know about HTML and/or templates. How else can we know what to display and where to display it? We could load external templates, via additional HTTP requests, but how would we know where to put it without some knowledge of the DOM? We could load templates embedded within special script tags, but we would first need to fetch the contents of those script tags.</p>
+			<p class="post-para">This brings us to the biggest problem with the separation of HTML and JavaScript: The only way we can get elements to attach behaviour to, and read data from, is by knowing about HTML elements in the document. Libraries like jQuery are built around the idea that HTML elements are only a CSS selector away from JavaScript.</p>
+
+			<h1>Components</h1>
+
+			<p class="post-para">Hopefully you’re willing to try this whole embedded HTML thing. In case not, I will create JS examples along with the JSX examples in this tutorial Let’s look at a simple component, just to get a feel for how one defines them:</p>
+		
+			<pre class="post-code">
+/**
+ * @jsx React.DOM
+ */
+  
+var HelloWorld = React.createClass({
+  render : function() {
+    return &#60;div>hello world!&#60;/div>;
+  }
+});
+
+React.renderComponent(
+  &#60;HelloWorld />,
+  document.body
+);
+			</pre>
+		
+			<p class="post-para">The same code, in pure JavaScript looks much the same:</p>
+			
+			<pre class="post-code">
+var HelloWorld = React.createClass({
+  render : function() {
+    return React.DOM.div({
+      children : "hello world!"
+    });
+  }
+});
+
+React.renderComponent(
+  HelloWorld({}),
+  document.body
+);
+			</pre>
+
+			<p class="post-para">
+				This is possible because JSX isn’t run directly in the browser. It may look that way in some examples, but there’s a script which converts JSX syntax into JS. For this to work, all the special JSX syntax needs to have a JS implementation. When you’re developing in JSX, you’re really just developing in an extended version of JavaScript.
+			</p>
+			<p class="post-para">
+				You may also notice that the comment we began with, which had @jsx React.DOM in it, wasn’t required in the JS implementation. This is because the parser needs to see that in order for it to convert the JSX syntax to JS. Whether you are loading JSX from script elements within the same document, or loading external JSX scripts, you should always include this comment at the top of the script file.
+			</p>
+			<blockquote>
+				The @jsx directive will allow you to run the parser tool on all your JS and JSX scripts, affecting only the JSX scripts.
+			</blockquote>
+			<p class="post-para">
+				Ignoring the React.DOM.div stuff, there’s not a lot to defining a component. Components will most often generate HTML for an interface. This is why we defined a render() method (on the JSON object we passed to the React.createClass() method).
+			</p>
+			<blockquote>
+				Don’t be confused by the empty JSON object we pass to the HelloWorld() method. This gets handled in a different way, which we’ll see in later tutorials.
+			</blockquote>
+			<p class="post-para">
+				When we return, from within a render() method, we’re showing React what we want to component’s generated HTML to look like. There are a few different kinds of data that can be returned from within a render() method, but you will most often see DOM elements (or components) being returned.
+			</p>
+			<blockquote>
+				You can find more examples of this in the React download, at: <a href="http://facebook.github.io/react/downloads.html">http://facebook.github.io/react/downloads.html.</a>
+			</blockquote>
+
+			<h1>Rendering Multiple Components</h1>
+
+			<p class="post-para">
+				Another common question is how to return multiple components from within a single render() method. The trick is that only one component can be returned, at a time. To return multiple, they must be wrapped within a container element. This is because of how the JS methods work. Let’s look at some JSX code:
+			</p>
+			<pre class="post-code">
+/**
+ * @jsx React.DOM
+ */
+  
+var HelloWorld = React.createClass({
+  render : function() {
+    return &#60;span>hello&#60;/span>&#60;span> world!&#60;/span>;
+  }
+});
+
+React.renderComponent(
+  &#60;HelloWorld />,
+  document.body
+);
+			</pre>
+			<p class="post-para">
+				This looks harmless enough. Instead of returning a single span, we want to return two. Look back to the previous JS implementation to see if you can figure out what’s wrong with this.
+			</p>
+			<p class="post-para">
+				If we were to try and imagine what this would look like in JS (because no compiler should allow that), it might look something like this:
+			</p>
+			<pre>
+var HelloWorld = React.createClass({
+  render : function() {
+    return React.DOM.span({
+      children : "hello"
+    })React.DOM.span({
+      children : " world!"
+    });
+  }
+});
+
+React.renderComponent(
+  HelloWorld({}),
+  document.body
+);
+			</pre>
+			<p class="post-para">
+				You see what’s happening with the two calls to the React.DOM.span() method? Without something to wrap those elements, in a sensible manner, all we can expect is an error. So how can we achieve this? We can wrap them in a container element:
+			</p>
+			<pre>
+/**
+ * @jsx React.DOM
+ */
+  
+var HelloWorld = React.createClass({
+  render : function() {
+    return &#60;div>&#60;span>hello&#60;/span>&#60;span> world!&#60;/span>&#60;/div>;
+  }
+});
+
+React.renderComponent(
+  &#60;HelloWorld />,
+  document.body
+);
+			</pre>
+			<p class="post-para">This will work, and translates into a reasonable JS equivalent:</p>
+			<pre>
+var HelloWorld = React.createClass({
+  render : function() {
+    return React.DOM.div({
+      children : [
+        React.DOM.span({
+          children : "hello"
+        }),
+        React.DOM.span({
+          children : " world!"
+        })
+      ]
+    });
+  }
+});
+
+React.renderComponent(
+  HelloWorld({}),
+  document.body
+);
+			</pre>
+			<p class="post-para">
+				Wrapping the span elements in a container div element 	equates to them being passed as children in an array.
+			</p>
+			<blockquote>
+				Hopefully you’re beginning to see the value of JSX over the traditional JavaScript approach. Considering you’re still talking about div’s and span’s, it boils down to the same thing. Only shorter.
+			</blockquote>
+
+			<h1>Compiling JSX</h1>
+
+			<p class="post-para">
+				If you look at the accompanying source-code, you will see how easy it is to embed and use JSX in your web pages. If you plan on using JSX in production systems, you will no doubt consider compiling the JSX files to JS files. There’s a tool you can use for this, and to install it you need to run the command:
+			</p>
+			<pre>npm install -g react-tools</pre>
+			<blockquote>
+				This assumes you already have NodeJS and NPM installed. If not, there are resources to teach you how to do that.
+			</blockquote>
+			<p class="post-para">
+				Once that’s done, you should be able to run the following command:
+			</p>
+			<pre>jsx --watch src/ build/</pre>
+			<p class="post-para">This command will watch for file changes, in the src/ directory, and compile the corresponding .js files into the build/ directory. There are other uses for this command, but that’s a subject for another time!</p>
+			<blockquote>
+				You can find more information, about the tools available, at: http://facebook.github.io/react/docs/tooling-integration.html.
+			</blockquote>
+
+			<h1>Conclusion</h1>
+			<p class="post-para">
+				Components are at the heart of React, and understanding them is essential to understanding how to build solid React interfaces. We’ve taken a brief look at a few examples, but there’s so much more to components. Stay tuned!
+			</p>
+			<p class="post-para">
+				If you enjoyed this tutorial; it would be helpful if you could click the Recommend button and share it with other developers.
+			</p>
+
+
+
+
+		</article>
+		<footer>
+
+		</footer>
+	</section>
+
+
+	<footer class="global-footer">
+		<div class="pageaction">
+			<div class="like-comment">
+				<img src="heart.png">
+				<img src="speech.png">
+			</div>
+			<div class="social">
+				<img src="twitter.png">
+				<img src="facebook.png">
+				<img src="elipses.png">
+			</div>
+			
+		</div>
+		<div class="links">
+			<div class="chris">
+				<img src="https://cdn-images-1.medium.com/fit/c/60/60/1*oZu4yGg3LiS4YBe_HnOKew.jpeg">
+				<span class="words">
+					<h3 class="chris-cred">
+						<STRONG>Christoper Pitt</STRONG> <br />
+					</h3>
+					<p class="chris-cred">
+						Programming > <br /> Robotics > Minecraft
+					</p>
+				</span>
+				<button class="follow">
+					Follow
+				</button>
+			</div>
+			<div class="tutorials">
+				<img src="https://cdn-images-1.medium.com/fit/c/60/60/1*bs9PbxDndAW7mmqve3EQ-w.jpeg">
+				<span class="words">
+					<h3 class="chris-cred">
+						<STRONG>React Tutorials</STRONG> <br />
+					</h3>
+					<p class="chris-cred">
+						 A series of quick tutorials on React.
+					</p>
+				</span>
+				<button class="follow">
+					Follow
+				</button>
+
+			</div>
+		</div>
+		<div class="response">
+			<div class="response-content">
+				<h1>Responses</h1>
+				<input type="text" value="Write a response...">
+				<p>There are other responses.</p>
+				<button>Show More</button>
+			</div>
+		</div>
+		<div class="subscribe">
+			
+		</div>
+		
+	</footer>
+
+</body>
+</html>
